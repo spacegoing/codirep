@@ -1,20 +1,34 @@
+#!/usr/bin/env bash
+set -xeuo pipefail
+
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+LOGFILE="logs/run_${TIMESTAMP}.log"
+exec &> >(tee -a "$LOGFILE")
+echo "Logging all output to: $LOGFILE"
+
 SAVE_DIR=~/codi_ckpt/codi_nl_llama
 
 mkdir -p "$SAVE_DIR"
 
-cp scripts/train_28.20_ce_llama1b_dynamic-teacher_factor-exp_lat6.sh "$SAVE_DIR"
+# cp scripts/train_28.20_ce_llama1b_dynamic-teacher_factor-exp_lat6.sh "$SAVE_DIR"
+
+
+export http_proxy="http://jdtcom:709a64b73eb3@10.119.176.202:3128"
+export https_proxy="http://jdtcom:709a64b73eb3@10.119.176.202:3128"
+export HTTP_PROXY="http://jdtcom:709a64b73eb3@10.119.176.202:3128"
+export HTTPS_PROXY="http://jdtcom:709a64b73eb3@10.119.176.202:3128"
 
 python train.py \
 	--output_dir "$SAVE_DIR" \
-  	--expt_name gsm8k_llama1b_latent_baseline \
+  --expt_name gsm8k_llama1b_latent_baseline \
 	--logging_dir "$SAVE_DIR/logs"\
 	--logging_steps 10 \
-	--model_name_or_path meta-llama/Llama-3.2-1B-Instruct \
+	--model_name_or_path /public/lichang93/stCodeLab/downloads/models/Llama-3.2-1B-Instruct \
 	--data_name icot-full \
 	--seed 11 \
 	--model_max_length 512 \
 	--per_device_train_batch_size 32 \
-  	--gradient_accumulation_steps 4 \
+  --gradient_accumulation_steps 4 \
 	--bf16 \
 	--num_train_epochs 3 \
 	--learning_rate 8e-4 \
@@ -23,14 +37,14 @@ python train.py \
 	--lora_r 128 --lora_alpha 32 --lora_init \
 	--save_strategy "no" \
 	--save_total_limit 1 \
-	  --save_safetensors False \
+	--save_safetensors False \
 	--weight_decay 0.1 \
 	--warmup_ratio 0.03 \
 	--lr_scheduler_type "cosine" \
 	--do_train \
 	--report_to tensorboard \
-   --num_latent 6 \
-   --logging_strategy "steps" \
+  --num_latent 6 \
+  --logging_strategy "steps" \
 	--use_prj True \
 	--prj_dim 2048 \
 	--prj_dropout 0.0 \

@@ -111,6 +111,7 @@ def extract_answer_number(sentence: str) -> float:
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
+    print('ajepfoajjeifapefijapejfapoejfapefjaiw')
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
     ##########################
@@ -126,7 +127,6 @@ def train():
             target_modules = ["c_attn", "c_proj", 'c_fc']
         else:
             raise ValueError(f"Only support LLAMA, Mistral, Falcon, Phi-2, but got {model_args.model_name_or_path}.")
-        
         lora_config = LoraConfig(
             task_type=task_type,
             inference_mode=False,
@@ -138,7 +138,9 @@ def train():
         )
 
 
+    print('awpefjapefjapef')
     model = CODI(model_args, training_args, lora_config)
+    print('awpefjapefjapef')
     tokenizer = transformers.AutoTokenizer.from_pretrained(
             model_args.model_name_or_path,
             token=model_args.token,
@@ -147,6 +149,7 @@ def train():
             padding_side="right",
             use_fast=False,
         )
+    print('awpefjapefjapef')
 
     if tokenizer.pad_token_id is None:
         tokenizer.add_special_tokens({'pad_token': '[PAD]'})
@@ -154,6 +157,7 @@ def train():
         if tokenizer.pad_token_id is None: # error handling
             tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids('[PAD]')
 
+    print('awpefjapefjapef')
     def get_answer_token_position(tokens, answer_prompts, tokenizer):
         #answer_prompt = torch.tensor([464, 3280, 318, 25])
         try:
@@ -366,7 +370,7 @@ def train():
         logging.warning("Downloading Data")
         if "icot" in data_args.data_name:
             if 'full' in data_args.data_name:
-                dataset = load_dataset("zen-E/GSM8k-Aug-NL")["train"]
+                dataset = load_dataset("/public/lichang93/stCodeLab/downloads/datasets/gsm8k-aug-nl")["train"]
             else:
                 dataset = load_dataset("zen-E/GSM8k-Aug")["train"]
             train_dataset = SupervisedDataset(data_name=data_args.data_name, raw_data=dataset, tokenizer=tokenizer, bot=model.bot_id, eot=model.eot_id)
@@ -401,6 +405,7 @@ def train():
     )
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
+    print('awpefjapefjapef')
     trainer = CustomTrainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
     trainer.train()
 
