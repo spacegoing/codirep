@@ -111,7 +111,6 @@ def extract_answer_number(sentence: str) -> float:
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
-    print('ajepfoajjeifapefijapejfapoejfapefjaiw')
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
     ##########################
@@ -138,9 +137,7 @@ def train():
         )
 
 
-    print('awpefjapefjapef')
     model = CODI(model_args, training_args, lora_config)
-    print('awpefjapefjapef')
     tokenizer = transformers.AutoTokenizer.from_pretrained(
             model_args.model_name_or_path,
             token=model_args.token,
@@ -149,7 +146,6 @@ def train():
             padding_side="right",
             use_fast=False,
         )
-    print('awpefjapefjapef')
 
     if tokenizer.pad_token_id is None:
         tokenizer.add_special_tokens({'pad_token': '[PAD]'})
@@ -157,7 +153,6 @@ def train():
         if tokenizer.pad_token_id is None: # error handling
             tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids('[PAD]')
 
-    print('awpefjapefjapef')
     def get_answer_token_position(tokens, answer_prompts, tokenizer):
         #answer_prompt = torch.tensor([464, 3280, 318, 25])
         try:
